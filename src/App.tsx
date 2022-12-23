@@ -34,7 +34,7 @@ const App = () => {
   };
   const handleAddOk = () => {
     if (name === '' || age === 0 || adress === '') {
-      alert('Enter a data')
+      alert('Enter aaa data')
     }
     else if (Number.isNaN(age)) {
       alert("Enter the correct value of number")
