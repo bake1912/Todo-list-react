@@ -1,26 +1,25 @@
 import { useState } from 'react';
-import { Space, Table } from 'antd';
+import { Popconfirm, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Button, Modal, Input } from 'antd';
-const data = [
-  {
-    key: 1,
-    name: 'John Brown',
-    age: 32,
-    adress: ' NewYork No. 1 Lake Park,'
-  },
-]
+import { Formik, Form, Field } from 'formik';
 
 const App = () => {
   const [name, setName] = useState("");
   const [age, setAge] = useState<number>(0);
   const [adress, setAdress] = useState('');
-  const [array, setArray] = useState<any[]>(data);
   const [editingUser, setEditingUser] = useState<any>(null);
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
   const [isModalEditOpen, setIsModalEditOpen] = useState(false);
   const [countKey, setCountKey] = useState(2);
-  
+  const [array, setArray] = useState([{
+    key: 1,
+    name: "Jonh",
+    age: 28,
+    adress: 'Trudova 3'
+  }]);
+
+
   const dataUpdate = {
     key: countKey,
     name: name,
@@ -47,7 +46,7 @@ const App = () => {
 
 
   };
-  
+
   const handleEditOk = () => {
     setArray(array => {
       return array.map(user => {
@@ -75,14 +74,12 @@ const App = () => {
   }
 
   const deleteUser = (record: any) => {
-    Modal.confirm({
-      title: `Are you sure to delete ${record.name} ?`,
-      okType: 'danger',
-      onOk: () => setArray(array => {
-        return array.filter(
-          user => user.key != record.key);
-      })
+
+    setArray(array => {
+      return array.filter(
+        user => user.key != record.key);
     })
+
   }
 
   const editUser = (record: string[]) => {
@@ -101,40 +98,43 @@ const App = () => {
     ADRESS = 'adress'
   }
 
-  const columns: ColumnsType<DataType> = [
-    {
-      title: ColumnsTopOptions.NAME,
-      dataIndex: ColumnsTopOptions.NAME,
-      key: ColumnsTopOptions.NAME,
-      render: (text) => <a>{text}</a>,
-    },
-    {
+  const columns: ColumnsType<DataType> =
+    [
+      {
+        title: ColumnsTopOptions.NAME,
+        dataIndex: ColumnsTopOptions.NAME,
+        key: ColumnsTopOptions.NAME,
+        render: (text) => <a>{text}</a>,
+      },
+      {
 
-      title: ColumnsTopOptions.AGE,
-      dataIndex: ColumnsTopOptions.AGE,
-      key: ColumnsTopOptions.AGE,
-    },
-    {
-      title: ColumnsTopOptions.ADRESS,
-      dataIndex: ColumnsTopOptions.ADRESS,
-      key: ColumnsTopOptions.ADRESS,
-    },
+        title: ColumnsTopOptions.AGE,
+        dataIndex: ColumnsTopOptions.AGE,
+        key: ColumnsTopOptions.AGE,
+      },
+      {
+        title: ColumnsTopOptions.ADRESS,
+        dataIndex: ColumnsTopOptions.ADRESS,
+        key: ColumnsTopOptions.ADRESS,
+      },
 
-    {
-      title: 'Action',
-      key: 'action',
-      render: (record) => (
-        <Space size="middle">
-          <a onClick={() => {
-            editUser(record)
-          }} >Edit</a>
-          <a onClick={() => {
-            deleteUser(record)
-          }} >Delete</a>
-        </Space>
-      ),
-    },
-  ];
+      {
+        title: 'Action',
+        key: 'action',
+        render: (record) => (
+          <Space size="middle">
+            <a onClick={() => {
+              editUser(record)
+            }} >Edit</a>
+            <Popconfirm title="Are you sure to delete this user?" onConfirm={() => deleteUser(record)}>
+              <a>
+                Delete</a>
+            </Popconfirm>
+          </Space>
+        ),
+      },
+    ];
+  
 
   return (
     <>
@@ -149,18 +149,20 @@ const App = () => {
         open={isModalAddOpen}
         onOk={handleAddOk}
         onCancel={handleAddCancel}>
-        <Input placeholder='name'
-          value={name}
-          onChange={(e) => { setName(e.target.value) }}
-          name='Name: ' />
-        <Input placeholder='age'
-          value={age}
-          onChange={(e) => { setAge(parseInt(e.target.value)) }}
-          name='age: ' />
-        <Input placeholder='adress'
-          value={adress}
-          onChange={(e) => { setAdress(e.target.value) }}
-          name='Adress: ' />
+       
+          <Input placeholder='name'
+            value={name}
+            onChange={(e) => { setName(e.target.value) }}
+            name='Name: ' />
+          <Input placeholder='age'
+            value={age}
+            onChange={(e) => { setAge(parseInt(e.target.value)) }}
+            name='age: ' />
+          <Input placeholder='adress'
+            value={adress}
+            onChange={(e) => { setAdress(e.target.value) }}
+            name='Adress: ' />
+      
       </Modal>
 
       <Modal title="Editing the user"
